@@ -79,9 +79,9 @@ class Email():
 
 	'''
 	发送邮件函数
-	:param mail_host: 邮箱服务器，163邮箱host: smtp.163.com
-	:param port: 端口号,163邮箱的默认端口是 25
-	:param username: 邮箱账号 za_ai@163.com
+	:param mail_host: 邮箱服务器
+	:param port: 端口号
+	:param username: 邮箱账号 
 	:param passwd: 邮箱密码(不是邮箱的登录密码，是邮箱的授权码)
 	:param recv: 邮箱接收人地址，多个账号以逗号隔开
 	:param title: 邮件标题
@@ -99,8 +99,6 @@ class Email():
 				smtp = smtplib.SMTP_SSL(host,port)
 			else:
 				smtp = smtplib.SMTP(host,port)
-
-			#smtp.connect(host)
 			# 发送邮件服务器对象
 			smtp.login(user, password)
 			smtp.sendmail(sender, self.receiver, self.msg.as_string())
@@ -109,8 +107,8 @@ class Email():
 			self.logger.info("测试报告已发送邮件")
 		except Exception as ex:
 			self.logger.error(str(ex))
-			print("测试报告发送失败!!!")
-			self.logger.info("测试报告发送失败")
+			print("测试报告发送邮件失败!!!")
+			self.logger.info("测试报告发送邮件失败")
 class MyEmail():
 	email = None
 	mutex = threading.Lock()

@@ -19,8 +19,6 @@ class ConfigDB:
 		password = Config.get_db(self.dbname, "password")
 		port = Config.get_db(self.dbname, "port")
 		database = Config.get_db(self.dbname, "database")
-		#dns = py_mysql.makedsn(str(host), int(port), database)
-
 		try:
 			self.db = pymysql.connect(str(host),username, password, database)
 			self.cursor = self.db.cursor()
