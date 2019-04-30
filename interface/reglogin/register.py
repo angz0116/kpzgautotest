@@ -43,7 +43,7 @@ class 注册(unittest.TestCase):
 		"""
 		注册的测试案例
 		"""
-		req.httpname = "KPTEST"
+		req.httpname = "KPZGTEST"
 		self.logger.info(self.tcase)
 		self.url = get_excel("url", self.No, interfaceNo)
 		# flag为1时，则重新生成新手机号；flag为2时，则从excel中读取已存在的
@@ -113,10 +113,6 @@ class 注册(unittest.TestCase):
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
-		'''
-        set_excel(r'"'+str(self.data)+'"', "请求报文", self.No, interfaceNo)
-        set_excel(r'"'+str(self.response)+'"', "返回报文", self.No, interfaceNo)
-        '''
 		set_excel(self.telphone, "mobile", self.No, interfaceNo)
 		set_excel(self.msg, "预期结果", self.No, interfaceNo)
 		set_excel(self.verifycode,"verifycode", self.No, interfaceNo)
