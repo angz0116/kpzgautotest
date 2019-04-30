@@ -118,3 +118,10 @@ def get_number(number):
 	s = ''.join(random.choice(string.digits) for i in range(number))
 	return s
 
+# 读取写入对应json文件
+def jsondata(filename):
+	json_path = os.path.join(proDir, "data", filename)
+	file = open(json_path, "rb")
+	filejson = json.load(file)
+	return filejson
+

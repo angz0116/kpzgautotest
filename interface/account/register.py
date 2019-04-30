@@ -9,8 +9,8 @@ from utils.baseDB import ConfigDB
 import time
 from service.gainPhone import createPhone
 from service.gainName import getFullName
-from datadao.sendverify import getSendverify
-from datadao.queryverify import query_sql
+from datadao.sendverifysms import getSendverify
+from datadao.queryverifysms import query_sql
 interfaceNo = "register"
 name = "用户注册"
 
@@ -43,7 +43,7 @@ class 注册(unittest.TestCase):
 		"""
 		注册的测试案例
 		"""
-		req.httpname = "KPZGTEST"
+		req.httpname = "KPZG"
 		self.logger.info(self.tcase)
 		self.url = get_excel("url", self.No, interfaceNo)
 		# flag为1时，则重新生成新手机号；flag为2时，则从excel中读取已存在的

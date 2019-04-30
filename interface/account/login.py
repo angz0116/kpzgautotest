@@ -17,11 +17,10 @@ sqldb = ConfigDB()
 
 @paramunittest.parametrized(*get_xls("interfaces.xls", interfaceNo))
 class 登录(unittest.TestCase):
-	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, mobile, logintype, password, uid, countrycode, token, 预期结果):
+	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, mobile, password, uid, countrycode, token, 预期结果):
 		self.No = str(No)
 		self.url = str(url)
 		self.mobile = str(mobile)
-		self.logintype = str(logintype)
 		self.password = str(password)
 		self.uid = str(uid)
 		self.countrycode =str(countrycode)
@@ -35,32 +34,25 @@ class 登录(unittest.TestCase):
 
 	"""用户登录"""
 	def test_body(self):
-		req.httpname = "KPTEST"
+		req.httpname = "KPZG"
 		self.url = get_excel("url", self.No, interfaceNo)
 		# 手机号
 		self.mobile = get_excel("mobile", self.No, "register")
 		# 国家编码
 		self.countrycode = get_excel("countrycode", self.No, interfaceNo)
-		# 登录凭证类型 1=短信验证码  2=密码登录
-		self.logintype = get_excel("logintype", self.No, interfaceNo)
-		# 根据登录类型验证，是1短信或2密码
-		if self.logintype =="1":
-			self.password = get_excel("secretkey", self.No, "getMobileStatus")
-		else:
-			self.password = get_excel("password", self.No, interfaceNo)
+		# 密码
+		self.password = get_excel("password", self.No, interfaceNo)
 
 		print("用户登录接口__login手机号==" + str(self.mobile))
-		self.data = {
-			"username": self.mobile,
-			"password": self.password,
-			"login_type": self.logintype,
-			"app_version": "8.0.0",
-			"system": "3",
-			"device_model": "HUAWEI P10",
-			"system_version": "V1.0.0",
-			"country_code": self.countrycode,
-			"channel": "5"
-		}
+		# 获取json字符串
+		self.data = jsondata("account\\login.json")
+		# 动态获取手机号
+		self.data["mobile"] = self.mobile
+		# 动态获取密码
+		self.data["password"] = self.password
+		# 国家编码
+		self.data["countrycode"] = self.countrycode
+		print(self.data)
 		req.set_url(self.url, self.data, token="")
 		req.set_data(self.data)
 		self.response = req.post()
@@ -77,20 +69,19 @@ class 登录(unittest.TestCase):
 		try:
 			self.assertEqual(self.retcode, 0, self.logger.info("检查是否登录成功"))
 			if self.retcode==0:
-				if len(self.response["data"])>0:
+				if "data" in self.response:
 					self.tokenp = self.response["data"]["token"]
 					self.uid = self.response["data"]["uid"]
 					set_excel(self.tokenp, "token", self.No, interfaceNo)
 					set_excel(self.uid, "uid", self.No, interfaceNo)
-					# 写入addusertag sheet页中
-					set_excel(self.uid, "touid", self.No, "addusertag")
-					set_excel(self.tokenp, "token", self.No, "addusertag")
 
 			set_excel("pass", "测试结果", self.No, interfaceNo)
 			self.logger.info("测试通过")
-		except AssertionError:
+		except AssertionError as ae:
+			print("实际结果与预期结果：")
+			print(ae)
+			self.logger.info("实际结果与预期结果："+ae)
 			set_excel("fail", "测试结果", self.No, interfaceNo)
-			self.msg = self.response["msg"]
 			self.logger.error("测试失败")
 		self.msg = self.response["msg"]
 		self.logger.info(self.msg)
