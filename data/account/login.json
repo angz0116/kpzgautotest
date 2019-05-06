@@ -1,15 +1,12 @@
 {
-	"mobile": "222222",
-	"nick": "22222",
-	"reg_type": "222",
-	"verify": "2222",
-	"pass": "22222",
-	"source": "1",
-	"country_code": "86",
-	"yk_token": "5",
+	"mobile": "",
+	"password": "",
+	"country_code": "",
+	"source": "3",
 	"app_version": "8.0.0",
-	"system": "3",
-	"device_model": "HUAWEI P10",
-	"system_version": "V1.0.0",
+	"v": "4.2.0",
+	"login_device": "HUAWEI P10",
+	"system_v": "android",
+	"from": "8.0.0",
 	"channel": "5"
 }

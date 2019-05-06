@@ -5,15 +5,11 @@ from utils.baseHttp import ConfigHttp
 from utils.baseUtils import *
 import unittest
 import paramunittest
-from utils.baseDB import ConfigDB
-
 
 interfaceNo = "login"
 name = "用户登录"
 
 req = ConfigHttp()
-sqldb = ConfigDB()
-
 
 @paramunittest.parametrized(*get_xls("interfaces.xls", interfaceNo))
 class 登录(unittest.TestCase):
@@ -30,10 +26,12 @@ class 登录(unittest.TestCase):
 		self.log = MyLog.get_log()
 		self.logger = self.log.logger
 		self.log.build_start_line(interfaceNo + name + "CASE " + self.No)
+		self.tcase = get_excel("测试用例", self.No, interfaceNo)
 		print(interfaceNo + name + "CASE " + self.No)
 
 	"""用户登录"""
 	def test_body(self):
+		#self.tcase
 		req.httpname = "KPZG"
 		self.url = get_excel("url", self.No, interfaceNo)
 		# 手机号
@@ -42,7 +40,6 @@ class 登录(unittest.TestCase):
 		self.countrycode = get_excel("countrycode", self.No, interfaceNo)
 		# 密码
 		self.password = get_excel("password", self.No, interfaceNo)
-
 		print("用户登录接口__login手机号==" + str(self.mobile))
 		# 获取json字符串
 		self.data = jsondata("account\\login.json")
@@ -51,7 +48,7 @@ class 登录(unittest.TestCase):
 		# 动态获取密码
 		self.data["password"] = self.password
 		# 国家编码
-		self.data["countrycode"] = self.countrycode
+		self.data["country_code"] = self.countrycode
 		print(self.data)
 		req.set_url(self.url, self.data, token="")
 		req.set_data(self.data)
@@ -80,17 +77,14 @@ class 登录(unittest.TestCase):
 		except AssertionError as ae:
 			print("实际结果与预期结果：")
 			print(ae)
-			self.logger.info("实际结果与预期结果："+ae)
+			self.logger.info("实际结果与预期结果：")
+			self.logger.error(ae)
 			set_excel("fail", "测试结果", self.No, interfaceNo)
 			self.logger.error("测试失败")
 		self.msg = self.response["msg"]
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
-		'''
-        set_excel(r'"'+str(self.data)+'"', "请求报文", self.No, interfaceNo)
-        set_excel(r'"'+str(self.response)+'"', "返回报文", self.No, interfaceNo)
-        '''
 		set_excel(self.msg,"预期结果",self.No, interfaceNo)
 		set_excel(self.password, "password", self.No, interfaceNo)
 		set_excel(self.mobile,"mobile", self.No, interfaceNo)
@@ -99,6 +93,7 @@ class 登录(unittest.TestCase):
 		self.log.build_case_line("返回报文", self.response)
 		self.log.build_case_line("预期结果", self.msg)
 		self.log.build_end_line(interfaceNo + "--CASE" + self.No)
+
 if __name__ == '__main__':
 	unittest.main()
 

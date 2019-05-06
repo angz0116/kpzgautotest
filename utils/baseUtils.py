@@ -9,7 +9,7 @@ import random
 from datetime import date
 import string
 from xml.etree import ElementTree as ElementTree
-
+import warnings
 
 database = {}
 proDir = os.path.dirname(os.path.dirname(__file__))
@@ -122,6 +122,7 @@ def get_number(number):
 def jsondata(filename):
 	json_path = os.path.join(proDir, "data", filename)
 	file = open(json_path, "rb")
+	warnings.simplefilter("ignore", ResourceWarning)
 	filejson = json.load(file)
 	return filejson
 
