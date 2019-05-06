@@ -7,7 +7,7 @@ sqldb = ConfigDB()
 '''
 #查询验证码的方法
 def query_sql(logger, mobile,countrycode):
-    sqldb.dbname = "KMPLUGIN"
+    sqldb.dbname = "KMZGPLUGIN"
     try:
         logger.info("==========查询验证码 START=======")
         # 假如是国内手机号则直接按照手机号查询，如果是国外，得加上国家编码

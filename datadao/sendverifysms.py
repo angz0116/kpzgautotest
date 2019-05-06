@@ -10,7 +10,7 @@ req = ConfigHttp()
 """
 def getSendverify(logger,action ,ftype, account, countrycode):
     logger.info("==========获取发送验证码 START=======")
-    req.httpname = "KPTEST"
+    req.httpname = "KPZG"
     url = "/account/sendverify"
     data = {
         "type": ftype,
