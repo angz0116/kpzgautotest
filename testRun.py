@@ -62,7 +62,7 @@ class mytestRun:
 				print("********TEST START********")
 				logger.info("********TEST START********")
 				with open(resultPath, 'wb') as fp:
-					runner = HTMLTestRunner(stream=fp, title='科界APP接口测试报告', description='详细测试用例结果', tester='赵爱')
+					runner = HTMLTestRunner(stream=fp, title='科普中国APP接口测试报告', description='详细测试用例结果', tester='赵爱')
 					runner.run(suit)
 					# 把测试报告截图生成保存到log日志，report.html测试报告同一文件夹
 					savescreenimg(resultPath)

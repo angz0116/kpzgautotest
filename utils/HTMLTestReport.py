@@ -50,9 +50,9 @@ class Template_mixin(object):
 	2: '错误',
 	}
 
-	DEFAULT_TITLE = '科界APP接口测试报告'
-	DEFAULT_DESCRIPTION = '科界APP接口测试'
-	DEFAULT_TESTER='科界测试部'
+	DEFAULT_TITLE = '科普中国APP接口测试报告'
+	DEFAULT_DESCRIPTION = '科普中国APP接口测试'
+	DEFAULT_TESTER='测试部'
 
 	# ------------------------------------------------------------------------
 	# HTML Template
