@@ -3,11 +3,11 @@ from utils.baseDB import ConfigDB
 from utils.baseUtils import *
 sqldb = ConfigDB()
 '''
-查询科界app验证码
+查询科普中国app验证码
 '''
 #查询验证码的方法
-def query_sql(logger, mobile,countrycode):
-    sqldb.dbname = "KMZGPLUGIN"
+def query_sql(logger, mobile, countrycode):
+    sqldb.dbname = "KPZGPLUGIN"
     try:
         logger.info("==========查询验证码 START=======")
         # 假如是国内手机号则直接按照手机号查询，如果是国外，得加上国家编码
@@ -15,7 +15,7 @@ def query_sql(logger, mobile,countrycode):
             newmobile = mobile
         else:
             newmobile = str(countrycode)+str(mobile)
-        SQL = get_sql("KMPLUGIN", "verify_log", "mobile")%(newmobile)
+        SQL = get_sql("KPPLUGIN", "verify_log", "mobile")%(newmobile)
         cursor = sqldb.executeSQL(SQL)
         res = sqldb.get_all(cursor)
         if len(res)>0:
@@ -36,7 +36,5 @@ def query_sql(logger, mobile,countrycode):
         logger.info("==========查询验证码 失败=======")
 
     sqldb.closeDB()
-
-
 
 

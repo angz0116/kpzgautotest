@@ -8,7 +8,6 @@ import paramunittest
 from utils.baseDB import ConfigDB
 import time
 from service.gainPhone import createPhone
-from service.gainName import getFullName
 from datadao.sendverifysms import getSendverify
 from datadao.queryverifysms import query_sql
 interfaceNo = "register"
@@ -21,16 +20,16 @@ sqldb = ConfigDB()
 class 注册(unittest.TestCase):
 	"""注册已存在的用户"""
 
-	def setParameters(self, No, 测试结果, 测试用例, 请求报文, 返回报文,url, mobile, regtype, countrycode, verifycode,password, flag, 预期结果):
+	def setParameters(self, No, 测试结果, 测试用例, 请求报文, 返回报文, url, mobile, countrycode, verifycode, password, flag, 预期结果):
 		self.No = str(No)
 		self.url = str(url)
 		self.mobile = str(mobile)
-		self.regtype = str(regtype)
 		self.countrycode = str(countrycode)
 		self.verifycode = str(verifycode)
 		self.password = str(password)
 		self.flag = str(flag)
 
+	#准备测试数据，前置的参数赋值
 	def setUp(self):
 		self.log = MyLog.get_log()
 		self.logger = self.log.logger
@@ -55,50 +54,44 @@ class 注册(unittest.TestCase):
 		else:
 			# 从excel中获取手机号
 			self.telphone = get_excel("mobile", self.No, interfaceNo)
-		# 获取姓名
-		self.nick = getFullName()
 		# 注册密码
 		self.password = get_excel("password", self.No, interfaceNo)
-		# 注册类型 1=普通密码注册 2=短信验证码
-		self.regtype = get_excel("regtype", self.No, interfaceNo)
 		# 国家编码，86中国，其他国外
 		self.countrycode = get_excel("countrycode", self.No, interfaceNo)
 		# 获取验证码的方法
-		self.veresult = getSendverify(self.logger, "reg", "mobile", self.telphone, self.countrycode)
+		self.veresult = getSendverify(self.logger, "1", self.telphone, self.countrycode)
 		if self.veresult ==0:
 			time.sleep(10)
 			# 从数据库中查询验证码
 			self.verifycode = query_sql(self.logger,self.telphone,self.countrycode)
 		# 根据注册类型判断是输入验证码或密码
 		print("用户注册接口手机号==" + self.telphone)
-		self.data = {
-			"mobile": self.telphone,
-			"nick": self.nick,
-			"reg_type": self.regtype,
-			"verify": self.verifycode,
-			"pass": self.password,
-			"source": "1",
-			"country_code": self.countrycode,
-			"yk_token": "5",
-			"app_version": "8.0.0",
-			"system": "3",
-			"device_model": "HUAWEI P10",
-			"system_version": "V1.0.0",
-			"channel": "5"
-		}
-		#print(self.data)
+		# 获取json字符串
+		self.data = jsondata("account"+os.sep+"register.json")
+		# 动态获取手机号
+		self.data["mobile"] = self.telphone
+		# 验证码
+		self.data["verify"] = self.verifycode
+		# 国家编码
+		self.data["country_code"] = self.countrycode
+		print(self.data)
 		req.set_url(self.url, self.data, token="")
 		req.set_data(self.data)
 		self.response = req.post()
 		try:
-			print(self.response)
-			self.retcode = self.response["code"]
+			if self.response is None:
+				self.retcode = 1
+				self.msg = "报文返回为空！"
+			else:
+				print(self.response)
+				self.retcode = self.response["code"]
+				self.msg = self.response["msg"]
 		except Exception:
 			self.logger.error("报文返回为空！")
 			print("报文返回为空！")
 		self.check_result()
 		self.wr_excel()
-	
+	# 断言检查结果
 	def check_result(self):
 		try:
 			self.assertEqual(self.retcode, 0 ,self.logger.info("检查是否注册成功"))
@@ -109,17 +102,18 @@ class 注册(unittest.TestCase):
 			print(ex)
 			set_excel("fail", "测试结果", self.No, interfaceNo)
 			self.logger.error("测试失败")
-		self.msg = self.response["msg"]
+			
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
 		set_excel(self.telphone, "mobile", self.No, interfaceNo)
 		set_excel(self.msg, "预期结果", self.No, interfaceNo)
 		set_excel(self.verifycode,"verifycode", self.No, interfaceNo)
-		# 注册成功后，则把手机号写入“检查是否注册”的接口中
-		set_excel(self.telphone, "mobile", self.No, "getMobileStatus")
+		set_excel(self.telphone, "mobile", self.No, "login")
+		set_excel(self.telphone, "mobile", self.No, "loginbyverify")
 		set_excel(self.countrycode, "countrycode", self.No, "login")
-	
+		set_excel(self.countrycode, "countrycode", self.No, "loginbyverify")
+	#测试后的清除工作，比如参数还原等等
 	def tearDown(self):
 		self.log.build_case_line("请求报文", self.data)
 		self.log.build_case_line("返回报文", self.response)
@@ -127,5 +121,6 @@ class 注册(unittest.TestCase):
 		self.log.build_end_line(interfaceNo + "--CASE" + self.No)
 if __name__ =='__main__':
 	unittest.main()
+
 
 

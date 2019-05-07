@@ -5,19 +5,23 @@ from utils.baseHttp import ConfigHttp
 from utils.baseUtils import *
 import unittest
 import paramunittest
+from datadao.sendverifysms import getSendverify
+from datadao.queryverifysms import query_sql
+import time
 
-interfaceNo = "login"
-name = "用户登录"
+interfaceNo = "loginbyverify"
+name = "手机号快捷登录"
 
 req = ConfigHttp()
 
 @paramunittest.parametrized(*get_xls("interfaces.xls", interfaceNo))
-class 登录(unittest.TestCase):
-	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, mobile, password, uid, countrycode, token, 预期结果):
+class 手机号快捷登录(unittest.TestCase):
+	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, mobile, verify, flag, uid, countrycode, token, 预期结果):
 		self.No = str(No)
 		self.url = str(url)
 		self.mobile = str(mobile)
-		self.password = str(password)
+		self.verify = str(verify)
+		self.flag = str(flag)
 		self.uid = str(uid)
 		self.countrycode =str(countrycode)
 		self.token = str(token)
@@ -38,15 +42,25 @@ class 登录(unittest.TestCase):
 		self.mobile = get_excel("mobile", self.No, interfaceNo)
 		# 国家编码
 		self.countrycode = get_excel("countrycode", self.No, interfaceNo)
-		# 密码
-		self.password = get_excel("password", self.No, interfaceNo)
+		#根据flag为1时，已存在验证码，不为1时，重新生成新的验证码
+		self.flag = get_excel("flag", self.No, interfaceNo)
+		if self.flag == "1":
+			self.verifycode = get_excel("verify", self.No, interfaceNo)
+		else:
+			# 获取验证码的方法
+			self.veresult = getSendverify(self.logger, "4", self.mobile, self.countrycode)
+			if self.veresult == 0:
+				time.sleep(10)
+				# 从数据库中查询验证码
+				self.verifycode = query_sql(self.logger, self.mobile, self.countrycode)
+		
 		print("用户登录接口__login手机号==" + str(self.mobile))
 		# 获取json字符串
-		self.data = jsondata("account" + os.sep + "login.json")
+		self.data = jsondata("account" + os.sep + "loginbyverify.json")
 		# 动态获取手机号
 		self.data["mobile"] = self.mobile
 		# 动态获取密码
-		self.data["password"] = self.password
+		self.data["verify"] = self.verifycode
 		# 国家编码
 		self.data["country_code"] = self.countrycode
 		print(self.data)
@@ -66,7 +80,7 @@ class 登录(unittest.TestCase):
 			print("报文返回为空！")
 		self.check_result()
 		self.wr_excel()
-
+	# 断言检查结果
 	def check_result(self):
 		try:
 			self.assertEqual(self.retcode, 0, self.logger.info("检查是否登录成功"))
@@ -86,13 +100,14 @@ class 登录(unittest.TestCase):
 			self.logger.error(ae)
 			set_excel("fail", "测试结果", self.No, interfaceNo)
 			self.logger.error("测试失败")
+
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
 		set_excel(self.msg,"预期结果",self.No, interfaceNo)
-		set_excel(self.password, "password", self.No, interfaceNo)
+		set_excel(self.verify, "verify", self.No, interfaceNo)
 		set_excel(self.mobile,"mobile", self.No, interfaceNo)
-		
+	#测试后的清除工作，比如参数还原等等
 	def tearDown(self):
 		self.log.build_case_line("请求报文", self.data)
 		self.log.build_case_line("返回报文", self.response)

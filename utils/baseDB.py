@@ -14,6 +14,7 @@ class ConfigDB:
 		self.cursor = None
 
 	def connectDB(self):
+
 		host = Config.get_db(self.dbname, "host")
 		username = Config.get_db(self.dbname, "username")
 		password = Config.get_db(self.dbname, "password")
@@ -39,6 +40,7 @@ class ConfigDB:
 		return self.cursor
 
 	def executeSQL(self, sql):
+
 		self.connectDB()
 		try:
 			self.cursor.execute(sql)

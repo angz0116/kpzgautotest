@@ -1,12 +1,10 @@
 # -*- coding:utf-8 -*-
 
-import os ,sys
+import os
 from xlrd import open_workbook
 from xlutils.copy import copy
-import requests
 import json
 import random
-from datetime import date
 import string
 from xml.etree import ElementTree as ElementTree
 import warnings
@@ -23,10 +21,10 @@ def set_xml():
 		for db in tree.findall("database"):
 			db_name = db.get("name")
 			table = {}
-			for tb in list(db.getchildren()):
+			for tb in db:
 				table_name = tb.get("name")
 				sql = {}
-				for data in list(tb.getchildren()):
+				for data in tb:
 					sql_id = data.get("id")
 					sql[sql_id] = data.text.strip()
 				table[table_name] = sql
