@@ -16,10 +16,9 @@ req = ConfigHttp()
 
 @paramunittest.parametrized(*get_xls("interfaces.xls", interfaceNo))
 class 获取提现用户信息校验(unittest.TestCase):
-	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, page, 预期结果):
+	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, 预期结果):
 		self.No = str(No)
 		self.url = str(url)
-		self.page =str(page)
 
 	def setUp(self):
 		self.log = MyLog.get_log()
@@ -39,7 +38,7 @@ class 获取提现用户信息校验(unittest.TestCase):
 		self.page = get_excel("page", self.No, interfaceNo)
 		print("获取提现用户信息校验，token==" + str(self.token))
 		# 获取json字符串
-		self.data = jsondata("wallet" + os.sep + "waldetail.json")
+		self.data = jsondata("wallet" + os.sep + "checkuserinfo.json")
 		self.data["page"] = self.page
 		print(self.data)
 		req.set_url(self.url, self.data, token=self.token)
