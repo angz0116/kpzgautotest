@@ -35,7 +35,7 @@ class 获取科普员类型信息(unittest.TestCase):
 		self.url = get_excel("url", self.No, interfaceNo)
 		#token
 		self.token = get_excel("token", self.No, "login")
-		print("获取科普员类型信息接口__userinfo，token==" + str(self.token))
+		print("获取科普员类型信息接口，token==" + str(self.token))
 		# 获取json字符串科普员
 		self.data = jsondata("sciencer" + os.sep + "sctype.json")
 		print(self.data)

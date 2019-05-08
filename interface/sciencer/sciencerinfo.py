@@ -9,17 +9,16 @@ from datadao.sendverifysms import getSendverify
 from datadao.queryverifysms import query_sql
 import time
 
-interfaceNo = "town"
-name = "获取街道信息"
+interfaceNo = "sciencerinfo"
+name = "获取科普员信息"
 
 req = ConfigHttp()
 
 @paramunittest.parametrized(*get_xls("interfaces.xls", interfaceNo))
-class 获取街道信息(unittest.TestCase):
-	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, countycode, 预期结果):
+class 获取科普员信息(unittest.TestCase):
+	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, 预期结果):
 		self.No = str(No)
 		self.url = str(url)
-		self.countycode = str(countycode)
 
 	def setUp(self):
 		self.log = MyLog.get_log()
@@ -28,19 +27,16 @@ class 获取街道信息(unittest.TestCase):
 		self.tcase = get_excel("测试用例", self.No, interfaceNo)
 		print(interfaceNo + name + "CASE " + self.No)
 
-	"""获取街道信息"""
+	"""获取科普员信息"""
 	def test_body(self):
 		#self.tcase
 		req.httpname = "KPZG"
 		self.url = get_excel("url", self.No, interfaceNo)
 		#token
 		self.token = get_excel("token", self.No, "login")
-		# 市区街道编码
-		self.countycode = get_excel("countycode", self.No, interfaceNo)
-		print("获取街道信息接口，token==" + str(self.token))
-		# 获取json字符串
-		self.data = jsondata("sciencer" + os.sep + "town.json")
-		self.data["county_code"] = self.countycode
+		print("获取科普员信息，token==" + str(self.token))
+		# 获取json字符串科普员
+		self.data = jsondata("sciencer" + os.sep + "sciencerinfo.json")
 		print(self.data)
 		req.set_url(self.url, self.data, token=self.token)
 		req.set_data(self.data)
@@ -61,7 +57,7 @@ class 获取街道信息(unittest.TestCase):
 	# 断言检查结果
 	def check_result(self):
 		try:
-			self.assertEqual(self.retcode, 0, self.logger.info("检查是否获取街道信息成功"))
+			self.assertEqual(self.retcode, 0, self.logger.info("检查是否获取科普员信息成功"))
 			set_excel("pass", "测试结果", self.No, interfaceNo)
 			self.logger.info("测试通过")
 		except AssertionError as ae:
@@ -75,20 +71,6 @@ class 获取街道信息(unittest.TestCase):
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
-		print(self.response["data"])
-		if "info" in self.response["data"]:
-			self.dinfo = self.response["data"]["info"]
-			self.logger.info(self.dinfo)
-		else:
-			self.townkeyvalue = random.choice(self.response["data"])
-			# 街道编码
-			self.towncode = self.townkeyvalue["code"]
-			# 街道名称
-			self.town = self.townkeyvalue["name"]
-			set_excel(self.towncode, "towncode", self.No, "company")
-			# 把街道code，name写入“scienceregister”
-			set_excel(self.towncode, "towncode", self.No, "scienceregister")
-			set_excel(self.town, "town", self.No, "scienceregister")
 		set_excel(self.msg,"预期结果",self.No, interfaceNo)
 	#测试后的清除工作，比如参数还原等等
 	def tearDown(self):

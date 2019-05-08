@@ -34,7 +34,7 @@ class 获取省会城市(unittest.TestCase):
 		self.url = get_excel("url", self.No, interfaceNo)
 		#token
 		self.token = get_excel("token", self.No, "login")
-		print("获取省会城市接口__userinfo，token==" + str(self.token))
+		print("获取省会城市接口，token==" + str(self.token))
 		# 获取json字符串
 		self.data = jsondata("sciencer" + os.sep + "province.json")
 		print(self.data)

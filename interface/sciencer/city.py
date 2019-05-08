@@ -37,7 +37,7 @@ class 获取市区信息(unittest.TestCase):
 		self.token = get_excel("token", self.No, "login")
 		# 获取市区编码
 		self.provincecode  = get_excel("provincecode", self.No, interfaceNo)
-		print("获取市区信息接口__userinfo，token==" + str(self.token))
+		print("获取市区信息接口，token==" + str(self.token))
 		# 获取json字符串
 		self.data = jsondata("sciencer" + os.sep + "city.json")
 		self.data["province_code"] = self.provincecode
