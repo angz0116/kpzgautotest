@@ -1,0 +1,21 @@
+{
+	"name": "小太阳",
+	"province_code": "110000000000",
+	"province": "市瞎市",
+	"city_code": "110100000000",
+	"city": "西城区",
+	"county_code": "110101000000",
+	"county": "文化广场",
+	"town_code": "110101001000",
+	"town": "陶然亭街道",
+	"company_name": "教育基地",
+	"science_type": "5",
+	"protocol": "1",
+	"source": "3",
+	"app_v": "4.2.0",
+	"v": "4.2.0",
+	"login_device": "HUAWEI P10",
+	"system_v": "8.0.0",
+	"from": "android",
+	"channel": "5"
+}
