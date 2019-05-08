@@ -1,3 +1,13 @@
 register
-login
 loginbyverify
+login
+resetpass
+userinfo
+type #科普员认证用户类型
+province #选择省会
+city #选择城市
+county #选择市区
+town #选择街道
+company #单位地址
+scienceregister # 科普员认证
+

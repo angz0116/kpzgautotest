@@ -5,22 +5,20 @@ from utils.baseHttp import ConfigHttp
 from utils.baseUtils import *
 import unittest
 import paramunittest
+from datadao.sendverifysms import getSendverify
+from datadao.queryverifysms import query_sql
+import time
 
-interfaceNo = "login"
-name = "用户登录"
+interfaceNo = "province"
+name = "获取省会城市"
 
 req = ConfigHttp()
 
 @paramunittest.parametrized(*get_xls("interfaces.xls", interfaceNo))
-class 用户登录(unittest.TestCase):
-	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, mobile, password, uid, countrycode, token, 预期结果):
+class 获取省会城市(unittest.TestCase):
+	def setParameters(self, No, 测试结果, 请求报文, 返回报文, 测试用例,url, 预期结果):
 		self.No = str(No)
 		self.url = str(url)
-		self.mobile = str(mobile)
-		self.password = str(password)
-		self.uid = str(uid)
-		self.countrycode =str(countrycode)
-		self.token = str(token)
 
 	def setUp(self):
 		self.log = MyLog.get_log()
@@ -29,28 +27,18 @@ class 用户登录(unittest.TestCase):
 		self.tcase = get_excel("测试用例", self.No, interfaceNo)
 		print(interfaceNo + name + "CASE " + self.No)
 
-	"""用户登录"""
+	"""获取省会城市"""
 	def test_body(self):
 		#self.tcase
 		req.httpname = "KPZG"
 		self.url = get_excel("url", self.No, interfaceNo)
-		# 手机号
-		self.mobile = get_excel("mobile", self.No, interfaceNo)
-		# 国家编码
-		self.countrycode = get_excel("countrycode", self.No, interfaceNo)
-		# 密码
-		self.password = get_excel("password", self.No, interfaceNo)
-		print("用户登录接口__login手机号==" + str(self.mobile))
+		#token
+		self.token = get_excel("token", self.No, "login")
+		print("获取省会城市接口__userinfo，token==" + str(self.token))
 		# 获取json字符串
-		self.data = jsondata("account" + os.sep + "login.json")
-		# 动态获取手机号
-		self.data["mobile"] = self.mobile
-		# 动态获取密码
-		self.data["password"] = self.password
-		# 国家编码
-		self.data["country_code"] = self.countrycode
+		self.data = jsondata("sciencer" + os.sep + "province.json")
 		print(self.data)
-		req.set_url(self.url, self.data, token="")
+		req.set_url(self.url, self.data, token=self.token)
 		req.set_data(self.data)
 		self.response = req.post()
 		try:
@@ -66,17 +54,10 @@ class 用户登录(unittest.TestCase):
 			print("报文返回为空！")
 		self.check_result()
 		self.wr_excel()
-
+	# 断言检查结果
 	def check_result(self):
 		try:
-			self.assertEqual(self.retcode, 0, self.logger.info("检查是否登录成功"))
-			if self.retcode==0:
-				if "data" in self.response:
-					self.tokenp = self.response["data"]["token"]
-					self.uid = self.response["data"]["uid"]
-					set_excel(self.tokenp, "token", self.No, interfaceNo)
-					set_excel(self.uid, "uid", self.No, interfaceNo)
-
+			self.assertEqual(self.retcode, 0, self.logger.info("检查是否获取省会城市成功"))
 			set_excel("pass", "测试结果", self.No, interfaceNo)
 			self.logger.info("测试通过")
 		except AssertionError as ae:
@@ -86,13 +67,22 @@ class 用户登录(unittest.TestCase):
 			self.logger.error(ae)
 			set_excel("fail", "测试结果", self.No, interfaceNo)
 			self.logger.error("测试失败")
+
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
+		if len(self.response["data"])>1:
+			self.prokeyvalue = random.choice(self.response["data"])
+			# 省会编码
+			self.provincecode = self.prokeyvalue["code"]
+			# 省会名称
+			self.province = self.prokeyvalue["name"]
+			set_excel(self.provincecode, "provincecode", self.No, "city")
+			#把省会编码，省会名称写入“scienceregister”科学员认证
+			set_excel(self.provincecode, "provincecode", self.No, "scienceregister")
+			set_excel(self.province, "province", self.No, "scienceregister")
 		set_excel(self.msg,"预期结果",self.No, interfaceNo)
-		set_excel(self.password, "password", self.No, interfaceNo)
-		set_excel(self.mobile,"mobile", self.No, interfaceNo)
-		
+	#测试后的清除工作，比如参数还原等等
 	def tearDown(self):
 		self.log.build_case_line("请求报文", self.data)
 		self.log.build_case_line("返回报文", self.response)

@@ -33,7 +33,7 @@ class 手机号快捷登录(unittest.TestCase):
 		self.tcase = get_excel("测试用例", self.No, interfaceNo)
 		print(interfaceNo + name + "CASE " + self.No)
 
-	"""用户登录"""
+	"""手机号快捷登录"""
 	def test_body(self):
 		#self.tcase
 		req.httpname = "KPZG"
@@ -54,7 +54,7 @@ class 手机号快捷登录(unittest.TestCase):
 				# 从数据库中查询验证码
 				self.verifycode = query_sql(self.logger, self.mobile, self.countrycode)
 		
-		print("用户登录接口__login手机号==" + str(self.mobile))
+		print("手机号快捷登录接口__login手机号==" + str(self.mobile))
 		# 获取json字符串
 		self.data = jsondata("account" + os.sep + "loginbyverify.json")
 		# 动态获取手机号
@@ -83,7 +83,7 @@ class 手机号快捷登录(unittest.TestCase):
 	# 断言检查结果
 	def check_result(self):
 		try:
-			self.assertEqual(self.retcode, 0, self.logger.info("检查是否登录成功"))
+			self.assertEqual(self.retcode, 0, self.logger.info("检查是否手机号快捷登录成功"))
 			if self.retcode==0:
 				if "data" in self.response:
 					self.tokenp = self.response["data"]["token"]
