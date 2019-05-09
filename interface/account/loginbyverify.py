@@ -90,6 +90,7 @@ class 手机号快捷登录(unittest.TestCase):
 					self.uid = self.response["data"]["uid"]
 					set_excel(self.tokenp, "token", self.No, interfaceNo)
 					set_excel(self.uid, "uid", self.No, interfaceNo)
+					set_excel(self.tokenp, "token", self.No, "authentication")
 
 			set_excel("pass", "测试结果", self.No, interfaceNo)
 			self.logger.info("测试通过")
