@@ -71,6 +71,11 @@ class 用户信息(unittest.TestCase):
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
+		if "info" in self.response["data"]:
+			self.logger.info("未查询到该客户当前余额")
+		else:
+			self.money = self.response["data"]["current_money"]
+			set_excel(self.money, "money", self.No, "withdrawcash")
 		set_excel(self.msg,"预期结果",self.No, interfaceNo)
 	#测试后的清除工作，比如参数还原等等
 	def tearDown(self):
