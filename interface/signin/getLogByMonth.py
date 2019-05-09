@@ -73,6 +73,7 @@ class 获取日历信息(unittest.TestCase):
 		self.logger.info(self.msg)
 	# 写入xls文件中
 	def wr_excel(self):
+		set_excel(self.gdate, "gdate", self.No, interfaceNo)
 		set_excel(self.msg,"预期结果",self.No, interfaceNo)
 	#测试后的清除工作，比如参数还原等等
 	def tearDown(self):

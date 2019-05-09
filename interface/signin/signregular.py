@@ -7,7 +7,7 @@ import unittest
 import paramunittest
 from datetime import  date
 
-interfaceNo = "regular"
+interfaceNo = "signregular"
 name = "获取签到积分规则"
 
 req = ConfigHttp()
